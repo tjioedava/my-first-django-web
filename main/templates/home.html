@@ -12,7 +12,7 @@
     <h3>Products:</h3>
     <ul>
         {% for product in products %}
-            <li>{{ product.name }}</li>
+            <a href="{% url 'show-product-by-id' product.pk %}"><li>{{ product.name }}</li></a>
         {% endfor %}
     </ul>
 

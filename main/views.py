@@ -19,7 +19,7 @@ def create_product(request):
 
     return render(request, 'create-product.html', {'form': form})
 
-def show_object(request):
+def show_product(request):
 
     if request.method != 'GET':
         raise Http404
@@ -28,9 +28,26 @@ def show_object(request):
 
     if format not in ['json', 'xml']:
         raise Http404
+    
+    type = ('application/json' if format == 'json' else 'application/xml') 
 
     data = Product.objects.all()
-    return HttpResponse(serializers.serialize(format, data), content_type = 'application/json')
+    return HttpResponse(serializers.serialize(format, data), content_type = type)
+
+def show_product_by_id(request, id):
+
+    if request.method != 'GET':
+        raise Http404
+    
+    format = request.GET.get('format', 'json')
+
+    if format not in ['json', 'xml']:
+        raise Http404
+    
+    type = ('application/json' if format == 'json' else 'application/xml') 
+
+    data = Product.objects.filter(pk = id)
+    return HttpResponse(serializers.serialize(format, data), content_type = type)
 
 def button_click(request):
 
