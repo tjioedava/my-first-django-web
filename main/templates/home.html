@@ -15,4 +15,10 @@
             <li>{{ product.name }}</li>
         {% endfor %}
     </ul>
+
+    <form method="post" action="{% url 'button-click' %}">
+        {% csrf_token %}
+        <button name="source" value="clear">Clear Products</button>
+    </form>
+    
 {% endblock content %}
