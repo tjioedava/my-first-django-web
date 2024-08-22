@@ -6,7 +6,13 @@
     </title>
 {% endblock head %}
 
-
 {% block content %}
-    <p>Hello World</p>
+    <h1>Home</h1>
+    <a href="{% url 'create-product' %}">Create Product</a>
+    <h3>Products:</h3>
+    <ul>
+        {% for product in products %}
+            <li>{{ product.name }}</li>
+        {% endfor %}
+    </ul>
 {% endblock content %}
