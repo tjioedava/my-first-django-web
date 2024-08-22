@@ -1,6 +1,7 @@
 from django.shortcuts import render
 from django.http import HttpResponse, HttpResponseRedirect, Http404;
 from django.urls import reverse
+from django.core import serializers;
 from .forms import ProductForm
 from .models import Product
 
@@ -17,6 +18,19 @@ def create_product(request):
         return HttpResponseRedirect(reverse('home'))
 
     return render(request, 'create-product.html', {'form': form})
+
+def show_object(request):
+
+    if request.method != 'GET':
+        raise Http404
+    
+    format = request.GET.get('format', 'json')
+
+    if format not in ['json', 'xml']:
+        raise Http404
+
+    data = Product.objects.all()
+    return HttpResponse(serializers.serialize(format, data), content_type = 'application/json')
 
 def button_click(request):
 
