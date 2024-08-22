@@ -1,6 +1,8 @@
-from django.urls import path
-from .views import show_main;
+from django.urls import path, reverse
+from django.http import HttpResponseRedirect;
+from .views import show_home;
 
 urlpatterns = [
-    path('', show_main, name='main'),
+    path('', lambda request: HttpResponseRedirect(reverse('home')), name='home-generic'),
+    path('home', show_home, name='home'),
 ]
