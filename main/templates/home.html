@@ -19,6 +19,7 @@
     <form method="post" action="{% url 'button-click' %}">
         {% csrf_token %}
         <button name="source" value="clear">Clear Products</button>
+        <button name="source" value="logout">Log Out</button>
     </form>
     
 {% endblock content %}
