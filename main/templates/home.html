@@ -8,6 +8,7 @@
 
 {% block content %}
     <h1>Home</h1>
+    <h3>Last Login: {{ last_login }}</h3>
     <a href="{% url 'create-product' %}">Create Product</a>
     <h3>Products:</h3>
     <ul>

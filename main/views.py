@@ -7,13 +7,18 @@ from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
+import datetime
 from .forms import ProductForm
 from .models import Product
 
 @login_required(login_url='/login/')
 def show_home(request):
     products = Product.objects.all() 
-    return render(request, 'home.html', {'products': products})
+    context = {
+        'products': products,
+        'last_login': request.COOKIES.get('last_login', '-'),
+    }
+    return render(request, 'home.html', context)
 
 @login_required(login_url='/login/')
 def create_product(request):
@@ -81,8 +86,9 @@ def log_in(request):
 
         if user is not None:
             login(request, user)
-            return HttpResponseRedirect(request.GET.get('next') or reverse('home'))
-
+            response = HttpResponseRedirect(request.GET.get('next') or reverse('home'))
+            response.set_cookie('last_login', str(datetime.datetime.now()))
+            return response
         else:
             messages.info(request, 'Login failed')
         
@@ -101,6 +107,8 @@ def button_click(request):
 
     if action == 'logout':
         logout(request)
-        return redirect('login')
+        response = HttpResponseRedirect(reverse('login'))
+        response.delete_cookie('last_login')
+        return response
 
     return redirect('home')
