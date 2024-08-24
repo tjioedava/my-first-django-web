@@ -13,7 +13,7 @@ from .models import Product
 
 @login_required(login_url='/login/')
 def show_home(request):
-    products = Product.objects.all() 
+    products = Product.objects.filter(user = request.user)
     context = {
         'products': products,
         'last_login': request.COOKIES.get('last_login', '-'),
@@ -26,7 +26,9 @@ def create_product(request):
     form = ProductForm(request.POST or None)
 
     if request.method == 'POST' and form.is_valid():
-        form.save()
+        product = form.save(commit=False)
+        product.user = request.user
+        product.save()
         return redirect('home')
 
     return render(request, 'create-product.html', {'form': form})
@@ -44,7 +46,7 @@ def show_product(request):
     
     type = ('application/json' if format == 'json' else 'application/xml') 
 
-    data = Product.objects.all()
+    data = Product.objects.filter(user = request.user)
     return HttpResponse(serializers.serialize(format, data), content_type = type)
 
 @login_required(login_url='/login/')
@@ -60,7 +62,7 @@ def show_product_by_id(request, id):
     
     type = ('application/json' if format == 'json' else 'application/xml') 
 
-    data = Product.objects.filter(pk = id)
+    data = Product.objects.filter(pk = id, user = request.user)
     return HttpResponse(serializers.serialize(format, data), content_type = type)
 
 def register(request):
@@ -103,7 +105,7 @@ def button_click(request):
     action = data.get('source')
 
     if action == 'clear':
-        Product.objects.all().delete()
+        Product.objects.filter(user = request.user).delete()
 
     if action == 'logout':
         logout(request)
